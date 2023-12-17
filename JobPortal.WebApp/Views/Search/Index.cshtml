@@ -1,0 +1,163 @@
+﻿@model IEnumerable<JobPortal.Data.Entities.Job>
+
+@{
+    Layout = "_Layout";
+}
+
+<!-- Start banner Area -->
+<section class="banner-area relative" id="home">
+    <div class="overlay overlay-bg"></div>
+    <div class="container">
+        <div class="row search-page-top d-flex align-items-center justify-content-center">
+            <div class="banner-content col-lg-12">
+                <h1 class="text-white">
+                    Search Results
+                </h1>
+                <p class="text-white link-nav">
+                    <a href="/">Home </a> <span class="lnr lnr-arrow-right"></span> <a href="#"> Job searching page</a>
+                </p>
+                <!--Search box-->
+                @Html.Partial("../Shared/_SearchBoxPartial.cshtml")
+                @if (ViewBag.q == null && ViewBag.province == null && ViewBag.skill == null)
+                {
+                    <p style="font-size: 25px" class="text-white"><span>@Model.Count()+</span> IT Jobs For <span> Developers</span></p>
+                }
+                else
+                {
+                    <p style="font-size: 25px; display: inline;" class="text-white">
+                        <span>@Model.Count()</span> Results found
+                    </p>
+                    @if (ViewBag.q != null)
+                    {
+                        <p style="font-size: 25px; display: inline;" class="text-white">for <span>"@ViewBag.q"</span></p>
+                    }
+                    @if (ViewBag.province != null)
+                    {
+                        <p style="font-size: 25px; display: inline;" class="text-white">in <span>@(ViewBag.province != null ? $"{ViewBag.province.Name}" : "")</span></p>
+                    }
+                    @if (ViewBag.skill != null)
+                    {
+                        <p style="font-size: 25px; display: inline;" class="text-white">for <span>@(ViewBag.skill != null ? $"{ViewBag.skill.Name}" : "")</span></p>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End banner Area -->
+<!-- Start post Area -->
+<section class="post-area section-gap">
+    <div class="container">
+        <div class="row justify-content-center d-flex">
+            <div class="col-lg-8 post-list">
+                
+                <!-- Time view component -->
+                <vc:time></vc:time>
+
+                <!--Job list-->
+                @if (Model.Any())
+                {
+                    @foreach (var job in Model)
+                    {
+                        <div class="single-post d-flex flex-row">
+                            <!-- Job skill -->
+                            <div class="thumb" style="align-items:center">
+                                <a href="/company/@job.AppUser.Slug"><img href="/job/@job.Slug" style="border-radius:10px" width="200" height="100" src="https://localhost:7211/images/employers/@job.AppUser.UrlAvatar" alt="employer image"></a>
+                                <ul class="tags" style="justify-content:center; display: grid; border-radius:10px">
+                                    <!-- Province -->
+                                    <li style="border-radius:10px">
+                                        <strong><a href="/job?slug=@job.Province.Slug" style="color: black"><span class="lnr lnr-map-marker"></span> @job.Province.Name</a></strong>
+                                    </li>
+                                </ul>
+                                <hr />
+                                <ul class="tags" style="justify-content:center; text-align: center; border-radius:10px">
+                                    <!-- Skill -->
+                                    @foreach (var skill in job.Skills)
+                                    {
+                                        <li style="border-radius:10px">
+                                            <strong><a href="/job?slug=@skill.Slug" style="color: black">@skill.Name</a></strong>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                            <!-- End job skill -->
+                            <div class="details" style="margin-left:20px; width:600px;">
+                                <div class="title d-flex flex-row justify-content-between">
+                                    <div class="titles">
+                                        <a href="/job/@job.Slug"><h4>@job.Name</h4></a>
+                                        <h5 style="color: gray"><span class="lnr lnr-hourglass"></span> @GetTimeAgo(job.CreateDate)</h5>
+                                        <h5><strong>From: <a href="/company/@job.AppUser.Slug">@job.AppUser.FullName</a></strong></h5>
+                                    </div>
+                                </div>
+                                <hr>
+                                <p>@Html.Raw(job.Introduce)</p>
+                                <hr />
+                                <div style="display:flex; justify-content: space-between;">
+                                    <div>
+                                        <h5><strong>Job Nature: @job.Time.Name</strong></h5>
+                                        <h5 style="color: blue"><span class="lnr lnr-book"></span> <strong>@job.Title.Name</strong></h5>
+                                        <h5 style="color: green"><strong>$ @job.MinSalary - @job.MaxSalary USD</strong></h5>
+                                    </div>
+                                    <div style="text-align:right; margin-top: 40px">
+                                        <ul class="btns">
+                                            <li style="border-radius:10px"><a href="/job/@job.Slug">Apply now</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-center" style="margin-top: 50px;">
+                        <img src="~/images/default/oops.png" alt="oops" width="600" height="400" style="margin-bottom: 10px; border-radius:10px">
+                        <h4>Oops! The job you're looking for doesn't exist.</h4>
+                    </div>
+                }
+            </div>
+            
+            <!-- Sidebar -->
+            @Html.Partial("../Shared/_SidebarPartial.cshtml")
+
+        </div>
+    </div>
+</section>
+<!-- End post Area -->
+<!-- Start callto-action Area -->
+<section class="callto-action-area section-gap">
+    <div class="container">
+        <div class="row d-flex justify-content-center">
+            <div class="menu-content col-lg-9">
+                <div class="title text-center">
+                    <h1 class="mb-10 text-white">Join us today without any hesitation</h1>
+                    <p class="text-white">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore  et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p>
+                    <a class="primary-btn" href="#">I am a Candidate</a>
+                    <a class="primary-btn" href="#">Request Free Demo</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End calto-action Area -->
+
+@functions {
+    public string GetTimeAgo(DateTime? createDate)
+    {
+        DateTime actualCreateDate = createDate.Value;
+        TimeSpan timeAgo = DateTime.Now - actualCreateDate;
+
+        if (timeAgo.TotalMinutes < 60)
+        {
+            return $"Posted {Math.Max(1, (int)timeAgo.TotalMinutes)} minute{(timeAgo.TotalMinutes >= 2 ? "s" : "")} ago";
+        }
+        else if (timeAgo.TotalHours < 24)
+        {
+            return $"Posted {Math.Max(1, (int)timeAgo.TotalHours)} hour{(timeAgo.TotalHours >= 2 ? "s" : "")} ago";
+        }
+        else
+        {
+            return $"Posted {Math.Max(1, (int)timeAgo.TotalDays)} day{(timeAgo.TotalDays >= 2 ? "s" : "")} ago";
+        }
+    }
+}

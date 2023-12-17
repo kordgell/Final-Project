@@ -1,0 +1,261 @@
+﻿@model IEnumerable<JobPortal.Data.Entities.Job>
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Http
+@inject SignInManager<AppUser> signInManager
+@inject UserManager<AppUser> userManager
+
+@{
+    var user = await userManager.GetUserAsync(User);
+}
+
+<style>
+    .pagination {
+        list-style-type: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+    }
+    
+    .pagination li {
+        margin: 0 5px;
+    }
+    
+    .pagination li a {
+        display: inline-block;
+        padding: 5px 10px;
+        border: 1px solid #ccc;
+        color: #333;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+    
+    .pagination li.active a {
+        background-color: #333;
+        color: #fff;
+    }
+</style>
+
+<!-- Content -->
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="row">
+        <div class="col-lg-12 mb-4 order-0">
+            <div class="card">
+                <div class="d-flex align-items-end row">
+                    <div class="col-sm-6">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">Hi, @(user.FullName ?? user.UserName)!</h5>
+                            <p class="mb-4">
+                                You have add <span class="fw-bold">@ViewBag.jobCount</span> jobs to your respository. Manage your job work now.
+                            </p>
+                            <a href="/employer/job/@user.Id" class="btn btn-sm btn-outline-primary">Manage your job</a>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <img src="https://localhost:7211/images/employers/@user.UrlAvatar"
+                             height="140"
+                             style="margin-bottom: 10px"
+                             alt="EMPLOYER IMAGE"
+                             data-app-dark-img="illustrations/man-with-laptop-dark.png"
+                             data-app-light-img="illustrations/man-with-laptop-light.png" />
+                    </div>
+                    <div class="col-sm-3 text-center text-sm-left">
+                        <div class="card-body pb-0 px-0 px-md-4">
+                            <img src="~/assets/admin/assets/img/illustrations/man-with-laptop-light.png"
+                                 height="140"
+                                 alt="View Badge User"
+                                 data-app-dark-img="illustrations/man-with-laptop-dark.png"
+                                 data-app-light-img="illustrations/man-with-laptop-light.png" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!-- Jobs Statistics-->
+        <div class="col-md-6 col-lg-4 col-xl-4 order-0 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex align-items-center justify-content-between pb-0">
+                    <div class="card-title mb-0">
+                        <h5 class="m-0 me-2">Job Statistics</h5>
+                        <small class="text-muted">@ViewBag.jobCount Total Jobs</small>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex flex-column align-items-center gap-1">
+                            <h2 class="mb-2">@ViewBag.jobCount</h2>
+                            <span>Total Jobs</span>
+                        </div>
+                        <img src="~/images/default/job-icon.png"
+                             height="120"
+                             style="margin-bottom: 10px"
+                             alt="EMPLOYER IMAGE"
+                             data-app-dark-img="illustrations/man-with-laptop-dark.png"
+                             data-app-light-img="illustrations/man-with-laptop-light.png" />
+                    </div>
+                    <ul class="p-0 m-0">
+                        <!-- Loop -->
+                        @if (Model.Any())
+                        {
+                            foreach (var job in Model)
+                            {
+                                <li class="d-flex mb-4 pb-1">
+                                    <div class="avatar flex-shrink-0 me-3">
+                                        <img src="~/assets/admin/assets/img/icons/unicons/cc-primary.png" alt="Job" class="rounded" />
+                                    </div>
+                                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                                        <div class="me-2">
+                                            <small class="text-muted d-block mb-1">@job.Province.Name</small>
+                                            <h6 class="mb-0">@job.Name</h6>
+                                        </div>
+                                        <div class="user-progress d-flex align-items-center gap-1">
+                                            <small class="fw-semibold">@job.CreateDate</small>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li>No jobs available</li>
+                        }
+                    </ul>
+                    <!--Page list-->
+                    <div class="text-center">
+                        <ul class="pagination">
+                            @Html.PagedListPager((IPagedList)Model, page =>
+                            Url.Action("Index", new { page }),
+                            new PagedListRenderOptions
+                            {
+                            Display = PagedListDisplayMode.IfNeeded,
+                            LiElementClasses = new string[] { "page-item" },
+                            UlElementClasses = new string[] { "pagination" },
+                            PageClasses = new string[] { "page-link" },
+                            MaximumPageNumbersToDisplay = 7, // Maximum number of pages displayed
+                            LinkToPreviousPageFormat = "<span aria-hidden=\"true\">&lsaquo;</span>",
+                            LinkToNextPageFormat = "<span aria-hidden=\"true\">&rsaquo;</span>",
+                            LinkToFirstPageFormat = "<span aria-hidden=\"true\">&lsaquo;&lsaquo;</span>",
+                            LinkToLastPageFormat = "<span aria-hidden=\"true\">&rsaquo;&rsaquo;</span>"
+                            })
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/ Jobs Statistics-->
+        <!-- Blog Statistics -->
+        <div class="col-md-6 col-lg-4 col-xl-4 order-0 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex align-items-center justify-content-between pb-0">
+                    <div class="card-title mb-0">
+                        <h5 class="m-0 me-2">Blog Statistics</h5>
+                        <small class="text-muted">@ViewBag.blogCount Total Blogs</small>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex flex-column align-items-center gap-1">
+                            <h2 class="mb-2">@ViewBag.blogCount</h2>
+                            <span>Total Blogs</span>
+                        </div>
+                        <img src="~/images/default/blog-icon.png"
+                             height="120"
+                             style="margin-bottom: 10px"
+                             alt="EMPLOYER IMAGE"
+                             data-app-dark-img="illustrations/man-with-laptop-dark.png"
+                             data-app-light-img="illustrations/man-with-laptop-light.png" />
+                    </div>
+                    <ul class="p-0 m-0">
+                        <!-- Loop -->
+                        @if (ViewBag.blogList != null && ViewBag.blogList.Count > 0)
+                        {
+                            @foreach (var blog in ViewBag.blogList)
+                            {
+                                <li class="d-flex mb-4 pb-1">
+                                    <div class="avatar flex-shrink-0 me-3">
+                                        <img src="~/assets/admin/assets/img/icons/unicons/cc-primary.png" alt="Job" class="rounded" />
+                                    </div>
+                                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                                        <div class="me-2">
+                                            <small class="text-muted d-block mb-1">@blog.Author</small>
+                                            <h6 class="mb-0">@blog.Title</h6>
+                                        </div>
+                                        <div class="user-progress d-flex align-items-center gap-1">
+                                            <small class="fw-semibold">Posted: @blog.CreateDate.ToString("dd/MM/yyyy")</small>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li>No blogs available</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!--/ Blog Statistics -->
+        <!-- CV Statistics -->
+        <div class="col-md-6 col-lg-4 col-xl-4 order-0 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex align-items-center justify-content-between pb-0">
+                    <div class="card-title mb-0">
+                        <h5 class="m-0 me-2">CV Statistics</h5>
+                        <small class="text-muted">@ViewBag.cvCount Total CVs</small>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex flex-column align-items-center gap-1">
+                            <h2 class="mb-2">@ViewBag.cvCount</h2>
+                            <span>Total CVs</span>
+                        </div>
+                        <img src="~/images/default/cv-icon.png"
+                             height="120"
+                             style="margin-bottom: 10px"
+                             alt="EMPLOYER IMAGE"
+                             data-app-dark-img="illustrations/man-with-laptop-dark.png"
+                             data-app-light-img="illustrations/man-with-laptop-light.png" />
+                    </div>
+                    <ul class="p-0 m-0">
+                        <!-- CVs -->
+                        @if (ViewBag.cvList != null && ViewBag.cvList.Count > 0)
+                        {
+                            @foreach (var cv in ViewBag.cvList)
+                            {
+                                <li class="d-flex mb-4 pb-1">
+                                    <div class="avatar flex-shrink-0 me-3">
+                                        <span class="avatar-initial rounded bg-label-primary">
+                                            <i class="bx bx-mobile-alt"></i>
+                                        </span>
+                                    </div>
+                                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                                        <div class="me-2">
+                                            <h6 class="mb-0">@cv.AppUser.FullName</h6>
+                                            <small class="text-muted">@cv.Job.Name</small>
+                                        </div>
+                                        <div class="user-progress">
+                                            <small class="fw-semibold">Apply date: @cv.ApplyDate.ToString("dd/MM/yyyy")</small>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li>No CVs available</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!--/ CV Statistics -->
+    </div>
+</div>
+<!-- / Content -->

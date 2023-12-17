@@ -1,0 +1,116 @@
+﻿@model JobPortal.Data.Entities.Skill
+
+@{
+    ViewData["Title"] = "Update skill";
+}
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Update logo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    &times;
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="UpdateImage" asp-route-id="@Model.Id" enctype="multipart/form-data" method="post">
+                    <div class="form-group">
+                        <label asp-for="Logo" class="control-label"></label><span class="text-danger">*</span>
+                        <input type="file" asp-for="Logo" class="form-control" accept="image/*" id="imgInp" />
+                        <span asp-validation-for="Logo" class="text-danger"></span>
+                        <br />
+                        <img id="blah" src="#" alt="your logo" style="width: 510px;" />
+                    </div>
+                    <br />
+                    <div class="form-group text-center">
+                        <input type="submit" value="Update" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title text-center">FORM UPDATE SKILL</h4>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-8 mx-auto">
+                            <form asp-action="Update" enctype="multipart/form-data" id="form">
+                                <div class="form-group" style="margin-bottom: 15px">
+                                    <label asp-for="Name" class="form-label"></label><span class="text-danger">*</span>
+                                    <input asp-for="Name" class="form-control" />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                                <div class="form-group" style="text-align: center">
+                                    <img id="blah" src="https://localhost:7211/images/skills/@Model.Logo" alt="your logo" style="width: 390px;" />
+                                    <a style="margin-top: 10px" class="btn btn-primary" href="#" data-toggle="modal" data-target="#exampleModal">Change logo</a>
+                                </div>
+                                <br />
+                                <div class="form-group text-center" style="margin-bottom: 15px">
+                                    <input style="background-color:forestgreen" type="button" onclick="onUpdate()" value="Update" class="btn btn-primary" />
+                                </div>
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <div class="text-center">
+                                    <a style="background-color:gray" class="btn btn-primary" href="/admin/skill">Back to List</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            $('#imgInp').change(function (evt) {
+                var file = evt.target.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#blah').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+    </script>
+
+    <script>
+        function onUpdate() {
+            Swal.fire({
+                title: 'Update this skill?',
+                text: "Are you sure to update this skill?",
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Confirm'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $("#form").submit();
+                    Swal.fire(
+                        'Success!',
+                        '',
+                        'success'
+                    )
+                }
+            })
+        }
+    </script>
+}

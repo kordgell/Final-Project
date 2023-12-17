@@ -1,0 +1,171 @@
+﻿@model JobPortal.Data.Entities.Job
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Http
+@inject SignInManager<AppUser> signInManager
+@inject UserManager<AppUser> userManager
+
+@{
+    var user = await userManager.GetUserAsync(User);
+    Layout = "_Layout";
+}
+
+<!-- Start banner Area -->
+<section class="banner-area relative" id="home">
+	<div class="overlay overlay-bg"></div>
+	<div class="container">
+		<div class="row d-flex align-items-center justify-content-center">
+			<div class="about-content col-lg-12">
+				<h1 class="text-white">
+					@Model.Name
+				</h1>
+				<p class="text-white link-nav"><a href="/">Home </a>  <span class="lnr lnr-arrow-right"></span>  <a href="#"> Job Details</a></p>
+			</div>
+		</div>
+	</div>
+</section>
+<!-- End banner Area -->
+<!-- Start post Area -->
+<section class="post-area section-gap">
+	<div class="container">
+		<div class="row justify-content-center d-flex">
+			<div class="col-lg-8 post-list">
+				<div class="single-post d-flex flex-row">
+					<div class="thumb" style="align-items:center">
+						<a href="/job?slug=@Model.AppUser.Slug"><img style="border-radius:10px" width="200" height="100" src="https://localhost:7211/images/employers/@Model.AppUser.UrlAvatar" alt="EMPLOYER IMAGE"></a>
+						<ul class="tags" style="justify-content:center; display: grid; border-radius:10px">
+							<!-- Province -->
+							<li style="border-radius:10px">
+								<strong><a href="/job?slug=@Model.Province.Slug" style="color: black"><span class="lnr lnr-map-marker"></span> @Model.Province.Name</a></strong>
+							</li>
+						</ul>
+						<hr />
+						<ul class="tags" style="justify-content:center; text-align: center; border-radius:10px">
+							<!-- Skill -->
+							@foreach (var skill in Model.Skills)
+							{
+								<li style="border-radius:10px">
+									<strong><a href="/job?slug=@skill.Slug" style="color: black">@skill.Name</a></strong>
+								</li>
+							}
+						</ul>
+					</div>
+					<div class="details" style="margin-left:20px; width:600px;">
+						<div class="title d-flex flex-row justify-content-between">
+							<div class="titles">
+								<a href="/job/@Model.Slug"><h4>@Model.Name</h4></a>
+								<h5 style="color: gray; margin-bottom: 5px;"><span class="lnr lnr-hourglass"></span> @GetTimeAgo(Model.CreateDate)</h5>
+								<h5 style="margin-top: 10px; margin-bottom: 10px"><strong>From: <a href="/company/@Model.AppUser.Slug">@Model.AppUser.FullName</a></strong></h5>
+							</div>
+						</div>
+						<hr>
+						<p>@Html.Raw(Model.Introduce)</p>
+						<hr />
+						<h5><strong>Job Nature: @Model.Time.Name</strong></h5>
+						<h5 style="color: blue"><span class="lnr lnr-book"></span> <strong>@Model.Title.Name</strong></h5>
+						<h5 style="color: green"><strong>$ @Model.MinSalary - @Model.MaxSalary USD</strong></h5>
+					</div>
+				</div>
+				<div class="single-post job-details">
+					<h4 class="single-title">Whom we are looking for</h4>
+					<p>@Html.Raw(Model.Description)</p>
+				</div>
+				<div class="single-post job-experience">
+					<ul>
+						<li>
+							<span>@Html.Raw(Model.ObjectTarget)</span>
+						</li>
+					</ul>
+				</div>
+				<div class="single-post job-experience">
+					<ul>
+						<li>
+							<span>@Html.Raw(Model.Experience)</span>
+						</li>
+					</ul>
+				</div>
+				<!--Apply-->
+				@if (signInManager.IsSignedIn(User))
+				{
+					if (!User.IsInRole("User"))
+					{
+						<a class="text-uppercase loadmore-btn mx-auto d-block" type="button" href="#" onclick="accessDenied()">apply now</a>
+					}
+					else if (ViewBag.HasSubmittedCV)
+					{
+						<a class="text-uppercase loadmore-btn mx-auto d-block" type="button" href="#" onclick="waiting()">apply now</a>
+					}
+					else
+					{
+						<a class="text-uppercase loadmore-btn mx-auto d-block" href="/apply/@Model.Slug/@user.Id">apply now</a>
+					}
+				}
+				else
+				{
+					<a target="_blank" class="text-uppercase loadmore-btn mx-auto d-block" href="/login">login to apply now</a>
+				}
+			</div>
+
+			<!-- Sidebar -->
+			@Html.Partial("../Shared/_SidebarPartial.cshtml")
+
+		</div>
+	</div>
+</section>
+<!-- End post Area -->
+<!-- Start callto-action Area -->
+<section class="callto-action-area section-gap">
+	<div class="container">
+		<div class="row d-flex justify-content-center">
+			<div class="menu-content col-lg-9">
+				<div class="title text-center">
+					<h1 class="mb-10 text-white">Join us today without any hesitation</h1>
+					<p class="text-white">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore  et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p>
+					<a class="primary-btn" href="#">I am a Candidate</a>
+					<a class="primary-btn" href="#">We are an Employer</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<!-- End calto-action Area -->
+
+<script>
+	function accessDenied() {
+		Swal.fire({
+			title: 'Sorry !',
+			text: 'Apply job only for user account.',
+			icon: 'warning',
+			confirmButtonText: 'OK'
+		});
+	}
+
+	function waiting() {
+		Swal.fire({
+			title: 'You already submitted your CV !',
+			text: 'Please wait for the results from the employer.',
+			icon: 'info',
+			confirmButtonText: 'OK'
+		});
+	}
+</script>
+
+@functions {
+	public string GetTimeAgo(DateTime? createDate)
+	{
+		DateTime actualCreateDate = createDate.Value;
+		TimeSpan timeAgo = DateTime.Now - actualCreateDate;
+
+		if (timeAgo.TotalMinutes < 60)
+		{
+			return $"Posted {Math.Max(1, (int)timeAgo.TotalMinutes)} minute{(timeAgo.TotalMinutes >= 2 ? "s" : "")} ago";
+		}
+		else if (timeAgo.TotalHours < 24)
+		{
+			return $"Posted {Math.Max(1, (int)timeAgo.TotalHours)} hour{(timeAgo.TotalHours >= 2 ? "s" : "")} ago";
+		}
+		else
+		{
+			return $"Posted {Math.Max(1, (int)timeAgo.TotalDays)} day{(timeAgo.TotalDays >= 2 ? "s" : "")} ago";
+		}
+	}
+}

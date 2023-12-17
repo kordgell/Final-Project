@@ -1,0 +1,270 @@
+﻿@model IEnumerable<JobPortal.Data.Entities.Job>
+
+@{
+    Layout = "_Layout";
+
+    //Jobs posted week ago
+    DateTime lastWeek = DateTime.Now.AddDays(-7); // get the time 7 days ago
+    byte jobCount = (byte)Model.Count(j => j.CreateDate >= lastWeek); // count the number of jobs in the period
+}
+
+<!-- Start banner Area -->
+<section class="banner-area relative" id="home">
+    <div class="overlay overlay-bg"></div>
+    <div class="container">
+        <div class="row search-page-top d-flex align-items-center justify-content-center">
+            <div class="banner-content col-lg-12">
+                <h1 class="text-white">
+                    <span>@jobCount+</span> Jobs posted week ago
+                </h1>
+                <!--Search box-->
+                @Html.Partial("../Shared/_SearchBoxPartial.cshtml")
+                <p style="font-size: 20px" class="text-white"> <span>Search by tags:</span> Developer, Engineer, Technology, Support, Manager, Senior, Junior</p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End banner Area -->
+
+<!-- Category -->
+<!-- Start features Area -->
+<section class="features-area">
+    <div class="container">
+        <!-- Category view component-->
+        <vc:category></vc:category>
+    </div>
+</section>
+
+<!-- Job model -->
+<!-- Start popular-post Area -->
+<section class="popular-post-area pt-100">
+    <div class="container" >
+        <div class="row align-items-center">
+            <div class="active-popular-post-carusel">
+                @foreach (var job in ViewBag.RandomJobs)
+                {
+                    <div class="single-popular-post d-flex flex-row"
+                    style="border-radius: 10px; color: white; background-color: #333; padding: 10px;">
+                        <div class="thumb">
+                            <img href="/job/@job.Slug" src="https://localhost:7211/images/employers/@job.AppUser.UrlAvatar" alt="job image" style="border-radius:5px" width="70" height="70" >
+                            <a class="btns text-uppercase" style="width:100px; text-align:center; border-radius:5px" href="/job/@job.Slug">View job</a>
+                        </div>
+                        <div class="details">
+                            <a href="/job/@job.Slug"><h4>@job.Name</h4></a>
+                            <p style="color: #ccc"><span class="lnr lnr-hourglass"></span> @GetTimeAgo(job.CreateDate)</p>
+                            <strong><a href="/job?slug=@job.Province.Slug" style="color: #ccc;"><span class="lnr lnr-map-marker"></span> @job.Province.Name</a></strong>
+                            <p>Job Nature: @job.Time.Name</p>
+                            <p class="address"><span class="lnr lnr-book"></span> @job.Title.Name</p>
+                            <p class="address">$ @job.MinSalary - @job.MaxSalary USD</p>
+                            <ul class="tags" style="border-radius:10px">
+                                <!-- Skill -->
+                                <li style="border-radius:10px">
+                                    <ul class="skill-list">
+                                        <span class="lnr lnr-tag"></span>
+                                        @foreach (var skill in job.Skills)
+                                        {
+                                            <li style="display: inline-block; margin-right: 5px;">
+                                                <strong>
+                                                    <a href="/job?slug=@skill.Slug" style="color: black; background-color: white; padding: 2px 10px; border-radius: 20px; text-decoration: none;">
+                                                        @skill.Name
+                                                    </a>
+                                                </strong>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Skill categories -->
+<!-- Start feature-cat Area -->
+<section class="feature-cat-area pt-100" id="category">
+    <div class="container">
+        <div class="row d-flex justify-content-center">
+            <div class="menu-content pb-60 col-lg-10">
+                <div class="title text-center">
+                    <h1 class="mb-10">Featured Skill Categories</h1>
+                    <p>Who are in extremely love with eco friendly system.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            @foreach (var skill in ViewBag.RandomSkills)
+            {
+                <div class="col-lg-2 col-md-4 col-sm-6">
+                    <div class="single-fcat">
+                        <a href="/job?slug=@skill.Slug">
+                            <img height="80" width="80" src="https://localhost:7211/images/skills/@skill.Logo" alt="">
+                        </a>
+                        <hr />
+                        <a href="/job?slug=@skill.Slug"><h5>@skill.Name</h5></a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Start Top Employer -->
+<section class="feature-cat-area pt-100" id="category">
+    <div class="container">
+        <div class="row d-flex justify-content-center">
+            <div class="menu-content pb-30 col-lg-10">
+                <div class="title text-center">
+                    <h1 class="mb-10">TOP EMPLOYERS</h1>
+                    <p>Recommend top employers</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            @foreach (var emp in ViewBag.RandomEmployers)
+            {
+                if (@emp.Jobs.Count > 0)
+                {
+                    <div class='col-xs-16 col-3'>
+                            <div class="card" style="overflow: hidden;">
+                                <a href="/company/@emp.Slug"><img class="card-img card-img-top" src="https://localhost:7211/images/employers/@emp.UrlAvatar" alt="EMPLOYER IMAGE" height='200' width='150'></a>
+                                <div class='card-body'>
+                                <a href="/company/@emp.Slug">
+                                    <h5 class="text-center" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">@emp.FullName</h5>
+                                </a>
+                                    <hr />
+                                    <footer class='card-text text-center'>
+                                    <a href="/job?slug=@emp.Province.Slug"><span class="lnr lnr-map-marker"></span><span> @emp.Province.Name</span></a>
+                                    <p></p>
+                                    <a href="/job?slug=@emp.Slug"><span> <img src="~/assets/admin/assets/img/icons/unicons/job-icon.png" alt="User" style="object-fit:cover; width:20px; height:20px " class="rounded" /> @emp.Jobs.Count Jobs <span class="lnr lnr-chevron-right"></span></span></a>
+                                    </footer>
+                                </div>
+                            </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
+<br /><br /><br />
+<!-- Start callto-action Area -->
+<section class="callto-action-area section-gap" id="join">
+    <div class="container">
+        <div class="row d-flex justify-content-center">
+            <div class="menu-content col-lg-9">
+                <div class="title text-center">
+                    <h1 class="mb-10 text-white">Join us today without any hesitation</h1>
+                    <p class="text-white">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore  et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p>
+                    <a class="primary-btn" href="#">I am a Candidate</a>
+                    <a class="primary-btn" href="#">Request Free Demo</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End calto-action Area -->
+
+<!-- Start download Area -->
+<section class="download-area section-gap" id="app">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 download-left">
+                <img src="../assets/user/img/d1.png" alt="">
+            </div>
+            <div class="col-lg-6 download-right">
+                <h1>
+                    Download the <br>
+                    Job Listing App Today!
+                </h1>
+                <p class="subs">
+                    It won’t be a bigger problem to find one video game lover in your neighbor. Since the introduction of Virtual Game, it has been achieving great heights so far as its popularity and technological advancement are concerned.
+                </p>
+                <div class="d-flex flex-row">
+                    <div class="buttons">
+                        <i class="fa fa-apple" aria-hidden="true"></i>
+                        <div class="desc">
+                            <a href="#">
+                                <p>
+                                    <span>Available</span> <br>
+                                    on App Store
+                                </p>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="buttons">
+                        <i class="fa fa-android" aria-hidden="true"></i>
+                        <div class="desc">
+                            <a href="#">
+                                <p>
+                                    <span>Available</span> <br>
+                                    on Play Store
+                                </p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End download Area -->
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Lưu giá trị thuộc tính được chọn khi nhấn nút Search
+        function saveSelectedValue() {
+            var provinceSelect = document.getElementsByName("province")[0];
+            var skillSelect = document.getElementsByName("skill")[0];
+
+            sessionStorage.setItem("selectedProvince", provinceSelect.value);
+            sessionStorage.setItem("selectedSkill", skillSelect.value);
+        }
+
+        // Khôi phục giá trị thuộc tính được chọn khi trang được tải lại
+        function restoreSelectedValue() {
+            var provinceSelect = document.getElementsByName("province")[0];
+            var skillSelect = document.getElementsByName("skill")[0];
+
+            var selectedProvince = sessionStorage.getItem("selectedProvince");
+            var selectedSkill = sessionStorage.getItem("selectedSkill");
+
+            if (selectedProvince) {
+                provinceSelect.value = selectedProvince;
+            }
+
+            if (selectedSkill) {
+                skillSelect.value = selectedSkill;
+            }
+        }
+
+        // Gọi hàm khôi phục giá trị thuộc tính khi trang được tải lại
+        window.onload = function () {
+            restoreSelectedValue();
+        };
+    </script>
+}
+
+@functions {
+    public string GetTimeAgo(DateTime? createDate)
+    {
+        DateTime actualCreateDate = createDate.Value;
+        TimeSpan timeAgo = DateTime.Now - actualCreateDate;
+
+        if (timeAgo.TotalMinutes < 60)
+        {
+            return $"Posted {Math.Max(1, (int)timeAgo.TotalMinutes)} minute{(timeAgo.TotalMinutes >= 2 ? "s" : "")} ago";
+        }
+        else if (timeAgo.TotalHours < 24)
+        {
+            return $"Posted {Math.Max(1, (int)timeAgo.TotalHours)} hour{(timeAgo.TotalHours >= 2 ? "s" : "")} ago";
+        }
+        else
+        {
+            return $"Posted {Math.Max(1, (int)timeAgo.TotalDays)} day{(timeAgo.TotalDays >= 2 ? "s" : "")} ago";
+        }
+    }
+}
