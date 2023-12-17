@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "k3LHFX85Tg3msKSVA2Sb7RROf7OEIr1icZAjo/r4Yc9HxJib5xVv5Scxx+70foM9d7COYU/tzSiEWeiCFhwHAQ==",
+  "dgSpecHash": "0VBBiSH0jS1BvUKKR8prlPW7JGzzAgQ7kVsM0dJAIQz/qRjFLyFsMT+U75TC57bPqllTGiqFoantb2YSIyevzw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\toshv\\OneDrive\\Desktop\\job-portal-main\\JobPortal.WebApp\\JobPortal.WebApp.csproj",
+  "projectFilePath": "C:\\Users\\toshv\\OneDrive\\Desktop\\Edward's final project\\JobPortal.WebApp\\JobPortal.WebApp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\toshv\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\toshv\\.nuget\\packages\\jetbrains.annotations\\2022.3.1\\jetbrains.annotations.2022.3.1.nupkg.sha512",

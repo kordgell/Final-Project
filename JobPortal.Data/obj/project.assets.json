@@ -2805,11 +2805,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\toshv\\OneDrive\\Desktop\\job-portal-main\\JobPortal.Data\\JobPortal.Data.csproj",
+      "projectUniqueName": "C:\\Users\\toshv\\OneDrive\\Desktop\\Edward's final project\\JobPortal.Data\\JobPortal.Data.csproj",
       "projectName": "JobPortal.Data",
-      "projectPath": "C:\\Users\\toshv\\OneDrive\\Desktop\\job-portal-main\\JobPortal.Data\\JobPortal.Data.csproj",
+      "projectPath": "C:\\Users\\toshv\\OneDrive\\Desktop\\Edward's final project\\JobPortal.Data\\JobPortal.Data.csproj",
       "packagesPath": "C:\\Users\\toshv\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\toshv\\OneDrive\\Desktop\\job-portal-main\\JobPortal.Data\\obj\\",
+      "outputPath": "C:\\Users\\toshv\\OneDrive\\Desktop\\Edward's final project\\JobPortal.Data\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -2830,8 +2830,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "C:\\Users\\toshv\\OneDrive\\Desktop\\job-portal-main\\JobPortal.Common\\JobPortal.Common.csproj": {
-              "projectPath": "C:\\Users\\toshv\\OneDrive\\Desktop\\job-portal-main\\JobPortal.Common\\JobPortal.Common.csproj"
+            "C:\\Users\\toshv\\OneDrive\\Desktop\\Edward's final project\\JobPortal.Common\\JobPortal.Common.csproj": {
+              "projectPath": "C:\\Users\\toshv\\OneDrive\\Desktop\\Edward's final project\\JobPortal.Common\\JobPortal.Common.csproj"
             }
           }
         }
